@@ -1,0 +1,51 @@
+plugins {
+	id 'java'
+	id "org.sonarqube" version "2.7"
+	id "jacoco"
+}
+
+group = 'stockphotosmanagerlite'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+}
+
+test {
+	//para que me muestre resumen del numero de test lanzados, existosos y demas
+  testLogging {
+    afterSuite { desc, result ->
+      if (!desc.parent) { // will match the outermost suite
+        println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+      }
+    }
+  }
+  
+    filter {
+    	//if (testsType != null) {
+    	if (project.properties['testsType'] != null && project.properties['testsType'].equals("integration")) {
+    		System.err.println("+++++++++ [build.gradle]testsType: " + testsType);
+    		System.err.println("+++++++++ Lanzando tests de integracion");
+    		includeTestsMatching "integration.*"
+    	} else {
+    		System.err.println("+++++++++ [build.gradle]testsType not defined");
+    		System.err.println("+++++++++ Lanzando tests unitarios");
+    		includeTestsMatching "unit.*"
+    	}
+    }
+
+}
+
+//para lambda
+task buildZip(type: Zip) {
+    from compileJava
+    from processResources              
+    into('lib') {
+        from configurations.compileClasspath
+    }           
+}
+build.dependsOn buildZip
