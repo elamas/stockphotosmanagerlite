@@ -7,13 +7,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.util.IOUtils;
 
 import stockphotosmanagerlite.model.Photo;
 
+//me baso en https://poi.apache.org/components/spreadsheet/quick-guide.html
 public class SpreadsheetManager {
 	
 	File excelFile;
@@ -36,7 +42,6 @@ public class SpreadsheetManager {
 		this.excelFile = excelFile;
 	}
 	
-	//TODO implementar todo
 	public void writeRow(Photo photo) throws Exception{
 		Workbook workbook;
 		try (InputStream is = new FileInputStream(excelFile)) {//es un try with resources que los cierra solo
@@ -45,110 +50,115 @@ public class SpreadsheetManager {
 			Sheet sheet = workbook.getSheetAt(0);
 			int nextRowNum = sheet.getLastRowNum() + 1;
 			Row row = sheet.createRow(nextRowNum);
+			row.setHeightInPoints(100);
 			
 			String image = photo.getImage();
 			if (image != null) {
 				Cell cell = row.createCell(IMAGE_CELL_NUM);
-				cell.setCellValue(image);
+				sheet.setColumnWidth(IMAGE_CELL_NUM, 20*256);//prueba y error. "Set the width (in units of 1/256th of a character width)"
+//				cell.setCellValue(image);
+				insertImage(workbook, sheet, image, nextRowNum, IMAGE_CELL_NUM);
 			}
 			
-			/*
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String path = photo.getPath();
+			if (path != null) {
+				Cell cell = row.createCell(PATH_CELL_NUM);
+				cell.setCellValue(path);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String titleSpanish = photo.getTitleSpanish();
+			if (titleSpanish != null) {
+				Cell cell = row.createCell(TITLE_SPANISH_CELL_NUM);
+				cell.setCellValue(titleSpanish);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String titleEnglish = photo.getTitleEnglish();
+			if (titleEnglish != null) {
+				Cell cell = row.createCell(TITLE_ENGLISH_CELL_NUM);
+				cell.setCellValue(titleEnglish);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String descSpanish = photo.getDescSpanish();
+			if (descSpanish != null) {
+				Cell cell = row.createCell(DESC_SPANISH_CELL_NUM);
+				cell.setCellValue(descSpanish);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String descEnglish = photo.getDescEnglish();
+			if (descEnglish != null) {
+				Cell cell = row.createCell(DESC_ENGLISH_CELL_NUM);
+				cell.setCellValue(descEnglish);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String tagsSpanish = photo.getTagsSpanish();
+			if (tagsSpanish != null) {
+				Cell cell = row.createCell(TAGS_SPANISH_CELL_NUM);
+				cell.setCellValue(tagsSpanish);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String tagsEnglish = photo.getTagsEnglish();
+			if (tagsEnglish != null) {
+				Cell cell = row.createCell(TAGS_ENGLISH_CELL_NUM);
+				cell.setCellValue(tagsEnglish);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String status = photo.getStatus();
+			if (status != null) {
+				Cell cell = row.createCell(STATUS_CELL_NUM);
+				cell.setCellValue(status);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String sentSites = photo.getSentSites();
+			if (sentSites != null) {
+				Cell cell = row.createCell(SENT_SITES_CELL_NUM);
+				cell.setCellValue(sentSites);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String dateSent = photo.getDateSent();
+			if (dateSent != null) {
+				Cell cell = row.createCell(DATE_SENT_CELL_NUM);
+				cell.setCellValue(dateSent);
 			}
 
-			String xxx = photo.getxxx();
-			if (xxx != null) {
-				Cell cell = row.createCell(xxxx_CELL_NUM);
-				cell.setCellValue(xxx);
+			String comments = photo.getComments();
+			if (comments != null) {
+				Cell cell = row.createCell(COMMENTS_CELL_NUM);
+				cell.setCellValue(comments);
 			}
-			*/
-
-			/*
-	private String ;
-	private String path;
-	private String titleSpanish;
-	private String titleEnglish;
-	private String descSpanih;
-	private String descEnglish;
-	private String tagsSpanish;
-	private String tagsEnglish;
-	private String status;
-	private String sentSites;
-	private String dateSent;
-	private String comments;
-			 */
-			
-//		    for (Row row : sheet) {
-//		    	System.err.println("[SpreadsheetManager - writeRow]**** Row ****");
-//		        for (Cell cell : row) {
-//		        	System.err.println("[SpreadsheetManager - writeRow]cell.getStringCellValue(): " + cell.getStringCellValue());
-//		        }
-//		    }	
 		}
 		
 		// Write the output to a file
 		try (OutputStream fileOut = new FileOutputStream(excelFile)) {
 			
-			System.err.println("[SpreadsheetManager - writeRow]cexcelFile: " + excelFile);
+			//System.err.println("[SpreadsheetManager - writeRow]excelFile: " + excelFile);
 			
 			workbook.write(fileOut);
+		}
+	}
+	
+	private static void insertImage(Workbook workbook, Sheet sheet, String imagePath, int rowNum, int cellNum) throws Exception {
+		try (InputStream is = new FileInputStream(imagePath)) {
+			//add picture data to this workbook.
+			byte[] bytes = IOUtils.toByteArray(is);
+			int pictureIdx = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
+			
+			CreationHelper helper = workbook.getCreationHelper();
+			
+			// Create the drawing patriarch.  This is the top level container for all shapes.
+			Drawing drawing = sheet.createDrawingPatriarch();
+			
+			//add a picture shape
+			ClientAnchor anchor = helper.createClientAnchor();
+			//set top-left corner of the picture,
+			//subsequent call of Picture#resize() will operate relative to it
+			anchor.setCol1(cellNum);
+			anchor.setRow1(rowNum);
+			Picture pict = drawing.createPicture(anchor, pictureIdx);
+			
+			//auto-size picture relative to its top-left corner
+			pict.resize();
+			
+			//sheet.autoSizeColumn(cellNum);
 		}
 	}
 	

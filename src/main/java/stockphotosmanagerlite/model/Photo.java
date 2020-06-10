@@ -6,7 +6,7 @@ public class Photo {
 	private String path;
 	private String titleSpanish;
 	private String titleEnglish;
-	private String descSpanih;
+	private String descSpanish;
 	private String descEnglish;
 	private String tagsSpanish;
 	private String tagsEnglish;
@@ -51,12 +51,12 @@ public class Photo {
 		this.titleEnglish = titleEnglish;
 	}
 
-	public String getDescSpanih() {
-		return descSpanih;
+	public String getDescSpanish() {
+		return descSpanish;
 	}
 
-	public void setDescSpanih(String descSpanih) {
-		this.descSpanih = descSpanih;
+	public void setDescSpanish(String descSpanish) {
+		this.descSpanish = descSpanish;
 	}
 
 	public String getDescEnglish() {

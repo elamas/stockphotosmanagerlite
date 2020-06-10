@@ -19,8 +19,22 @@ public class SpreadsheetManagerTest {
 		SpreadsheetManager manager = new SpreadsheetManager(new File("/quique/proyectos/mios/java/stockphotosmanagerlite/src/test/resources/test.xlsx"));
 		
 		Photo photo = new Photo();
-		//TODO rellenar el objeto Photo
-		photo.setImage(Long.toString(System.currentTimeMillis()));
+		photo.setComments("los commentarios");
+		photo.setDateSent("la fecha de envio");
+		photo.setDescEnglish("la desc english");
+		photo.setDescSpanish("la desc spanish");
+
+		//photo.setImage(Long.toString(System.currentTimeMillis()));
+		URL urlImage = Thread.currentThread().getContextClassLoader().getResource("perfil.jpg");
+		photo.setImage(urlImage.getPath());
+		
+		photo.setPath("el path");
+		photo.setSentSites("los sites");
+		photo.setStatus("el status");
+		photo.setTagsEnglish("los tags english");
+		photo.setTagsSpanish("los tags spanish");
+		photo.setTitleEnglish("el title english");
+		photo.setTitleSpanish("el title spanish");
 		
 		manager.writeRow(photo);
 	}
