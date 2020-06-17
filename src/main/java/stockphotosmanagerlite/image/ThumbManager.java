@@ -28,13 +28,6 @@ public class ThumbManager {
 			factor = (float)maxHeight/height;
 		}
 		
-//        Image tmp = image.getScaledInstance((int)(width*factor), (int)(height*factor), Image.SCALE_SMOOTH);
-//        BufferedImage scaled = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-//        Graphics2D g2d = scaled.createGraphics();
-//        g2d.drawImage(tmp, 0, 0, null);
-//        g2d.dispose();
-//        ImageIO.write(scaled, "JPG", new File(fileOutput));
-		
 		boolean preserveAlpha = true;
 	    int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
 	    BufferedImage scaledBI = new BufferedImage((int)(width*factor), (int)(height*factor), imageType);
