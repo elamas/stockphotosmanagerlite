@@ -2,6 +2,8 @@ package stockphotosmanagerlite.s3;
 
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.core.sync.ResponseTransformer;
+import software.amazon.awssdk.http.SdkHttpClient;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
@@ -26,12 +28,17 @@ public class S3Manager {
 	String pendingImagesFolder;//folder en el s3
 	String thumbsFolder;//folder en el s3
 	S3Client s3;
+	SdkHttpClient httpClient;
 	
 	public S3Manager(String bucket, String pendingImagesFolder, String thumbsFolder) {
 		 this.bucket = bucket;
 		 this.pendingImagesFolder = pendingImagesFolder;
 		 this.thumbsFolder = thumbsFolder;
-		 s3 = S3Client.builder().region(Constants.AWS_REGION).build();
+		 
+		 httpClient = ApacheHttpClient.builder()
+                 .maxConnections(50)
+                 .build();		 
+		 s3 = S3Client.builder().httpClient(httpClient).region(Constants.AWS_REGION).build();
 	}
 	
 	public void processImages() throws Exception {
@@ -84,5 +91,12 @@ public class S3Manager {
 		s3.deleteObject(deleteObjectRequest);
 		System.err.println("[S3Manager - deleteObject]End");
 	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		httpClient.close();
+	}
+	
+	
 
 }
