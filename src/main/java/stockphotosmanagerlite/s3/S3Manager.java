@@ -35,6 +35,10 @@ public class S3Manager {
 		 this.pendingImagesFolder = pendingImagesFolder;
 		 this.thumbsFolder = thumbsFolder;
 		 
+		 System.err.println("[S3Manager - constructor]bucket: " + bucket);
+		 System.err.println("[S3Manager - constructor]pendingImagesFolder: " + pendingImagesFolder);
+		 System.err.println("[S3Manager - constructor]thumbsFolder: " + thumbsFolder);
+		 
 		 httpClient = ApacheHttpClient.builder()
                  .maxConnections(50)
                  .build();		 
@@ -46,7 +50,7 @@ public class S3Manager {
         ListObjectsRequest listObjects = ListObjectsRequest
                 .builder()
                 .bucket(bucket)
-                .prefix("/" + pendingImagesFolder)
+                .prefix(pendingImagesFolder)
                 .build();
 
         ListObjectsResponse res = s3.listObjects(listObjects);
@@ -54,16 +58,18 @@ public class S3Manager {
 
         for (ListIterator<S3Object> it = objects.listIterator(); it.hasNext(); ) {
             S3Object s3Object = it.next();
-            System.err.println("[S3Manager - processImages]s3Object.key(): " + s3Object.key());
-            String imagePath = downloadImage(s3Object.key());
-            String thumbPath = imagePath.replace(".", "-thumb.");// /tmp/dvdxx-nombre-thumb.jpg
-            System.err.println("[S3Manager - processImages]thumbPath: " + thumbPath);
-            ThumbManager.generateThumb(imagePath, thumbPath, Constants.THUMB_MAX_WIDTH, Constants.THUMB_MAX_HEIGHT);
-            String thumbKey = "/" + thumbsFolder  + s3Object.key();
-            uploadThumb(thumbPath, thumbKey);
-            //deleteObject(s3Object.key());
-            System.err.println("[S3Manager - processImages]End");
+            if (s3Object.key().toLowerCase().endsWith(".jpg")) {//para que no entre con la carpeta, que viene en el listado
+                System.err.println("[S3Manager - processImages]s3Object.key(): " + s3Object.key());
+	            String imagePath = downloadImage(s3Object.key());
+	            String thumbPath = imagePath.replace(".", "-thumb.");// /tmp/dvdxx-nombre-thumb.jpg
+	            System.err.println("[S3Manager - processImages]thumbPath: " + thumbPath);
+	            ThumbManager.generateThumb(imagePath, thumbPath, Constants.THUMB_MAX_WIDTH, Constants.THUMB_MAX_HEIGHT);
+	            String thumbKey = "/" + thumbsFolder  + s3Object.key();
+	            uploadThumb(thumbPath, thumbKey);
+	            //deleteObject(s3Object.key());
+            }
         }
+        System.err.println("[S3Manager - processImages]End");
 	}
 	
 	//descargamos la imagen a /tmp/dvdxx-nombre.jpg
