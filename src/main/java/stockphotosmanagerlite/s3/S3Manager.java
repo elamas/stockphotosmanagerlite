@@ -60,11 +60,17 @@ public class S3Manager {
             S3Object s3Object = it.next();
             if (s3Object.key().toLowerCase().endsWith(".jpg")) {//para que no entre con la carpeta, que viene en el listado
                 System.err.println("[S3Manager - processImages]s3Object.key(): " + s3Object.key());
+                
+                //nombre de la imagen
+                String[] keySplitted = s3Object.key().split("/");
+                String imageName = keySplitted[keySplitted.length - 1];
+                
 	            String imagePath = downloadImage(s3Object.key());
 	            String thumbPath = imagePath.replace(".", "-thumb.");// /tmp/dvdxx-nombre-thumb.jpg
 	            System.err.println("[S3Manager - processImages]thumbPath: " + thumbPath);
 	            ThumbManager.generateThumb(imagePath, thumbPath, Constants.THUMB_MAX_WIDTH, Constants.THUMB_MAX_HEIGHT);
-	            String thumbKey = "/" + thumbsFolder  + s3Object.key();
+	            System.err.println("[S3Manager - processImages]exists: " + new File(thumbPath).exists());
+	            String thumbKey = thumbsFolder + "/"  + imageName;
 	            uploadThumb(thumbPath, thumbKey);
 	            //deleteObject(s3Object.key());
             }
@@ -85,6 +91,8 @@ public class S3Manager {
 	
 	private void uploadThumb(String thumbPath, String key) {
 		System.err.println("[S3Manager - uploadThumb]Begin");
+		System.err.println("[S3Manager - uploadThumb]thumbPath: " + thumbPath);
+		System.err.println("[S3Manager - uploadThumb]key: " + key);
 		s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key)
                 .build(),
                 RequestBody.fromFile(new File(thumbPath)));
