@@ -14,10 +14,12 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import stockphotosmanagerlite.image.ThumbManager;
+import stockphotosmanagerlite.model.Photo;
 import stockphotosmanagerlite.util.Constants;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -45,7 +47,7 @@ public class S3Manager {
 		 s3 = S3Client.builder().httpClient(httpClient).region(Constants.AWS_REGION).build();
 	}
 	
-	public void processImages() throws Exception {
+	public List<Photo> processImages() throws Exception {
 		System.err.println("[S3Manager - processImages]Begin");
         ListObjectsRequest listObjects = ListObjectsRequest
                 .builder()
@@ -55,7 +57,7 @@ public class S3Manager {
 
         ListObjectsResponse res = s3.listObjects(listObjects);
         List<S3Object> objects = res.contents();
-
+        List<Photo> photos = new ArrayList<Photo>(); 
         for (ListIterator<S3Object> it = objects.listIterator(); it.hasNext(); ) {
             S3Object s3Object = it.next();
             if (s3Object.key().toLowerCase().endsWith(".jpg")) {//para que no entre con la carpeta, que viene en el listado
@@ -64,6 +66,11 @@ public class S3Manager {
                 //nombre de la imagen
                 String[] keySplitted = s3Object.key().split("/");
                 String imageName = keySplitted[keySplitted.length - 1];
+                
+                Photo photo = new Photo();
+                photo.setImage(imageName);
+                photo.setPath(s3Object.key());
+                photos.add(photo);
                 
 	            String imagePath = downloadImage(s3Object.key());
 	            String thumbPath = imagePath.replace(".", "-thumb.");// /tmp/dvdxx-nombre-thumb.jpg
@@ -76,6 +83,7 @@ public class S3Manager {
             }
         }
         System.err.println("[S3Manager - processImages]End");
+        return photos;
 	}
 	
 	//descargamos la imagen a /tmp/dvdxx-nombre.jpg
