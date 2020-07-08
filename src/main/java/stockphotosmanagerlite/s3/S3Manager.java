@@ -47,6 +47,29 @@ public class S3Manager {
 		 s3 = S3Client.builder().httpClient(httpClient).region(Constants.AWS_REGION).build();
 	}
 	
+	public List<S3Object> getS3Objects() throws Exception {
+		System.err.println("[S3Manager - getS3Objects]Begin");
+        ListObjectsRequest listObjects = ListObjectsRequest
+                .builder()
+                .bucket(bucket)
+                .prefix(pendingImagesFolder)
+                .build();
+
+        ListObjectsResponse res = s3.listObjects(listObjects);
+        List<S3Object> objects = res.contents();
+        List<S3Object> returnObjects = new ArrayList<S3Object>();
+        for (ListIterator<S3Object> it = objects.listIterator(); it.hasNext(); ) {
+            S3Object s3Object = it.next();
+            if (s3Object.key().toLowerCase().endsWith(".jpg")) {//para que no entre con la carpeta, que viene en el listado
+                System.err.println("[S3Manager - processImages]s3Object.key(): " + s3Object.key());
+                returnObjects.add(s3Object);
+            }
+        }
+        System.err.println("[S3Manager - getS3Objects]End");
+        return returnObjects;
+	}
+	
+	/*
 	public List<Photo> processImages() throws Exception {
 		System.err.println("[S3Manager - processImages]Begin");
         ListObjectsRequest listObjects = ListObjectsRequest
@@ -85,9 +108,10 @@ public class S3Manager {
         System.err.println("[S3Manager - processImages]End");
         return photos;
 	}
+	*/
 	
 	//descargamos la imagen a /tmp/dvdxx-nombre.jpg
-	private String downloadImage(String key) {
+	public String downloadImage(String key) {
 		System.err.println("[S3Manager - downloadImage]Begin");
 		String path = "/tmp/" + key.replaceAll("/", "-");
 		System.err.println("[S3Manager - downloadImage]path: " + path);
@@ -97,7 +121,7 @@ public class S3Manager {
 		return path;
 	}
 	
-	private void uploadThumb(String thumbPath, String key) {
+	public void uploadThumb(String thumbPath, String key) {
 		System.err.println("[S3Manager - uploadThumb]Begin");
 		System.err.println("[S3Manager - uploadThumb]thumbPath: " + thumbPath);
 		System.err.println("[S3Manager - uploadThumb]key: " + key);

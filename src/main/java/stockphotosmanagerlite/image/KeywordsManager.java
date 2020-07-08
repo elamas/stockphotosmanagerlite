@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -19,11 +20,17 @@ import com.amazonaws.services.rekognition.model.Image;
 import com.amazonaws.services.rekognition.model.Label;
 import com.amazonaws.services.rekognition.model.S3Object;
 
+import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectsResponse;
+import stockphotosmanagerlite.model.Photo;
 import stockphotosmanagerlite.util.Constants;
 
 public class KeywordsManager {
 
 	private AmazonRekognition awsRekognition;
+	
+	String bucket;
+	String pendingImagesFolder;//folder en el s3
 	
 	public KeywordsManager() throws Exception {
 		awsRekognition = AmazonRekognitionClientBuilder
@@ -31,7 +38,13 @@ public class KeywordsManager {
 		        .withRegion(Constants.AWS_REGION.id())
 		        .build();
 	}
-	
+
+	public KeywordsManager(String bucket, String pendingImagesFolder) throws Exception {
+		this();
+		this.bucket = bucket;
+		this.pendingImagesFolder = pendingImagesFolder;
+	}
+
 	public List<String> getKeywords(String bucket, String imageKey, int maxKeywords) {
 		List<Label> labelList = getLabels(bucket, imageKey);
 		if (labelList != null && labelList.size() > 0) {
@@ -104,6 +117,5 @@ public class KeywordsManager {
 		});
 		return labelList;
 	}
-
 
 }
