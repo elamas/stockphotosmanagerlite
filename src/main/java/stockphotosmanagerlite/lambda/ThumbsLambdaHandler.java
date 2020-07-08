@@ -25,9 +25,6 @@ public class ThumbsLambdaHandler implements RequestHandler<Map<String,String>, L
 			String pendingImagesFolder = System.getenv("pendingImagesFolder");
 			String thumbsFolder = System.getenv("thumbsFolder");
 			
-//			S3Manager  s3Manager = new S3Manager(bucket, pendingImagesFolder, thumbsFolder);
-//			photos = s3Manager.processImages();
-			
 			return processImages(bucket, pendingImagesFolder, thumbsFolder);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -35,7 +32,7 @@ public class ThumbsLambdaHandler implements RequestHandler<Map<String,String>, L
 	}
 	
 	private List<Photo> processImages(String bucket, String pendingImagesFolder, String thumbsFolder) throws Exception {
-		S3Manager  s3Manager = new S3Manager(bucket, pendingImagesFolder, thumbsFolder);;
+		S3Manager  s3Manager = new S3Manager(bucket, pendingImagesFolder);;
 		List<S3Object> objects = s3Manager.getS3Objects();
 		List<Photo> photos = new ArrayList<Photo>(); 
 		for (S3Object object : objects) {

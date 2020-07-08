@@ -28,18 +28,15 @@ public class S3Manager {
 	
 	String bucket;
 	String pendingImagesFolder;//folder en el s3
-	String thumbsFolder;//folder en el s3
 	S3Client s3;
 	SdkHttpClient httpClient;
 	
-	public S3Manager(String bucket, String pendingImagesFolder, String thumbsFolder) {
+	public S3Manager(String bucket, String pendingImagesFolder) {
 		 this.bucket = bucket;
 		 this.pendingImagesFolder = pendingImagesFolder;
-		 this.thumbsFolder = thumbsFolder;
 		 
 		 System.err.println("[S3Manager - constructor]bucket: " + bucket);
 		 System.err.println("[S3Manager - constructor]pendingImagesFolder: " + pendingImagesFolder);
-		 System.err.println("[S3Manager - constructor]thumbsFolder: " + thumbsFolder);
 		 
 		 httpClient = ApacheHttpClient.builder()
                  .maxConnections(50)
@@ -68,47 +65,6 @@ public class S3Manager {
         System.err.println("[S3Manager - getS3Objects]End");
         return returnObjects;
 	}
-	
-	/*
-	public List<Photo> processImages() throws Exception {
-		System.err.println("[S3Manager - processImages]Begin");
-        ListObjectsRequest listObjects = ListObjectsRequest
-                .builder()
-                .bucket(bucket)
-                .prefix(pendingImagesFolder)
-                .build();
-
-        ListObjectsResponse res = s3.listObjects(listObjects);
-        List<S3Object> objects = res.contents();
-        List<Photo> photos = new ArrayList<Photo>(); 
-        for (ListIterator<S3Object> it = objects.listIterator(); it.hasNext(); ) {
-            S3Object s3Object = it.next();
-            if (s3Object.key().toLowerCase().endsWith(".jpg")) {//para que no entre con la carpeta, que viene en el listado
-                System.err.println("[S3Manager - processImages]s3Object.key(): " + s3Object.key());
-                
-                //nombre de la imagen
-                String[] keySplitted = s3Object.key().split("/");
-                String imageName = keySplitted[keySplitted.length - 1];
-                
-                Photo photo = new Photo();
-                photo.setImage(imageName);
-                photo.setPath(s3Object.key());
-                photos.add(photo);
-                
-	            String imagePath = downloadImage(s3Object.key());
-	            String thumbPath = imagePath.replace(".", "-thumb.");// /tmp/dvdxx-nombre-thumb.jpg
-	            System.err.println("[S3Manager - processImages]thumbPath: " + thumbPath);
-	            ThumbManager.generateThumb(imagePath, thumbPath, Constants.THUMB_MAX_WIDTH, Constants.THUMB_MAX_HEIGHT);
-	            System.err.println("[S3Manager - processImages]exists: " + new File(thumbPath).exists());
-	            String thumbKey = thumbsFolder + "/"  + imageName;
-	            uploadThumb(thumbPath, thumbKey);
-	            //deleteObject(s3Object.key());
-            }
-        }
-        System.err.println("[S3Manager - processImages]End");
-        return photos;
-	}
-	*/
 	
 	//descargamos la imagen a /tmp/dvdxx-nombre.jpg
 	public String downloadImage(String key) {
