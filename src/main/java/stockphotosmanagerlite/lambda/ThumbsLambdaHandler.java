@@ -32,11 +32,11 @@ public class ThumbsLambdaHandler implements RequestHandler<Map<String,String>, L
 	}
 	
 	private List<Photo> processImages(String bucket, String pendingImagesFolder, String thumbsFolder) throws Exception {
-		S3Manager  s3Manager = new S3Manager(bucket, pendingImagesFolder);;
+		S3Manager  s3Manager = new S3Manager(bucket, pendingImagesFolder);
 		List<S3Object> objects = s3Manager.getS3Objects();
 		List<Photo> photos = new ArrayList<Photo>(); 
 		for (S3Object object : objects) {
-            System.err.println("[S3Manager - processImages]s3Object.key(): " + object.key());
+            System.err.println("[ThumbsLambdaHandler - processImages]s3Object.key(): " + object.key());
             
             //nombre de la imagen
             String[] keySplitted = object.key().split("/");
@@ -49,9 +49,9 @@ public class ThumbsLambdaHandler implements RequestHandler<Map<String,String>, L
             
             String imagePath = s3Manager.downloadImage(object.key());
             String thumbPath = imagePath.replace(".", "-thumb.");// /tmp/dvdxx-nombre-thumb.jpg
-            System.err.println("[S3Manager - processImages]thumbPath: " + thumbPath);
+            System.err.println("[ThumbsLambdaHandler - processImages]thumbPath: " + thumbPath);
             ThumbManager.generateThumb(imagePath, thumbPath, Constants.THUMB_MAX_WIDTH, Constants.THUMB_MAX_HEIGHT);
-            System.err.println("[S3Manager - processImages]exists: " + new File(thumbPath).exists());
+            System.err.println("[ThumbsLambdaHandler - processImages]exists: " + new File(thumbPath).exists());
             String thumbKey = thumbsFolder + "/"  + imageName;
             s3Manager.uploadThumb(thumbPath, thumbKey);
 		}

@@ -29,8 +29,8 @@ public class KeywordsManager {
 
 	private AmazonRekognition awsRekognition;
 	
-	String bucket;
-	String pendingImagesFolder;//folder en el s3
+//	String bucket;
+//	String pendingImagesFolder;//folder en el s3
 	
 	public KeywordsManager() throws Exception {
 		awsRekognition = AmazonRekognitionClientBuilder
@@ -39,11 +39,13 @@ public class KeywordsManager {
 		        .build();
 	}
 
+	/*
 	public KeywordsManager(String bucket, String pendingImagesFolder) throws Exception {
 		this();
 		this.bucket = bucket;
 		this.pendingImagesFolder = pendingImagesFolder;
 	}
+	*/
 
 	public List<String> getKeywords(String bucket, String imageKey, int maxKeywords) {
 		List<Label> labelList = getLabels(bucket, imageKey);
