@@ -30,7 +30,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.13'
 }
 
-/*
 test {
 	//para que me muestre resumen del numero de test lanzados, existosos y demas
   testLogging {
@@ -55,7 +54,6 @@ test {
     }
 
 }
-*/
 
 //para lambda
 task buildZip(type: Zip) {

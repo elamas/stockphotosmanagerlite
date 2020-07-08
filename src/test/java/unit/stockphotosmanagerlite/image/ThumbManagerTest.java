@@ -1,8 +1,10 @@
-package stockphotosmanagerlite.image;
+package unit.stockphotosmanagerlite.image;
 
 import java.net.URL;
 
 import org.junit.Test;
+
+import stockphotosmanagerlite.image.ThumbManager;
 
 public class ThumbManagerTest {
 	

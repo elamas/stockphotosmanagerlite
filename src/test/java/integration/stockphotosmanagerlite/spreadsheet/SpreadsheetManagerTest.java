@@ -1,4 +1,4 @@
-package stockphotosmanagerlite.spreadsheet;
+package integration.stockphotosmanagerlite.spreadsheet;
 
 import java.io.File;
 import java.net.URL;
@@ -6,6 +6,7 @@ import java.net.URL;
 import org.junit.Test;
 
 import stockphotosmanagerlite.model.Photo;
+import stockphotosmanagerlite.spreadsheet.SpreadsheetManager;
 
 public class SpreadsheetManagerTest {
 	

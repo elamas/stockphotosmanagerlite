@@ -1,7 +1,10 @@
-package stockphotosmanagerlite.image;
+package integration.stockphotosmanagerlite.image;
 
 import java.util.List;
 import org.junit.Test;
+
+import stockphotosmanagerlite.image.KeywordsManager;
+
 import static org.junit.Assert.*;
 
 public class KeywordsManagerTest {
