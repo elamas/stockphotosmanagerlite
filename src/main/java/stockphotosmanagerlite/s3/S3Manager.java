@@ -71,8 +71,12 @@ public class S3Manager {
 		System.err.println("[S3Manager - downloadImage]Begin");
 		String path = "/tmp/" + key.replaceAll("/", "-");
 		System.err.println("[S3Manager - downloadImage]path: " + path);
+		File outputFile = new File(path);
+	    if (outputFile.exists()) {
+	    	outputFile.delete();
+	    }
 		s3.getObject(GetObjectRequest.builder().bucket(bucket).key(key).build(),
-		        ResponseTransformer.toFile(new File(path)));
+		        ResponseTransformer.toFile(outputFile));
 		System.err.println("[S3Manager - downloadImage]End");
 		return path;
 	}

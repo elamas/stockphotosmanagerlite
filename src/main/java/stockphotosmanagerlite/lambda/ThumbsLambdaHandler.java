@@ -19,6 +19,8 @@ public class ThumbsLambdaHandler implements RequestHandler<Map<String,String>, L
 	@Override
 	public List<Photo> handleRequest(Map<String, String> input, Context context) {
 		try {
+			System.err.println("[ThumbsLambdaHandler - handleRequest]Version: 000002");
+			
 			System.err.println("[ThumbsLambdaHandler - handleRequest]input:" + input);
 			
 			String bucket = System.getenv("bucket");

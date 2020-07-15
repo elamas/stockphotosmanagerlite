@@ -33,17 +33,20 @@ public class ThumbManager {
 		boolean preserveAlpha = true;
 	    int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
 	    BufferedImage scaledBI = new BufferedImage((int)(width*factor), (int)(height*factor), imageType);
-	    System.err.println("[ThumbManager - generateThumb]Traza 1");
 	    Graphics2D g = scaledBI.createGraphics();
-	    System.err.println("[ThumbManager - generateThumb]Traza 2");
 	    if (preserveAlpha) {
 	            g.setComposite(AlphaComposite.Src);
 	    }
 	    g.drawImage(image, 0, 0, (int)(width*factor), (int)(height*factor), null); 
-	    System.err.println("[ThumbManager - generateThumb]Traza 3");
 	    g.dispose();
-	    System.err.println("[ThumbManager - generateThumb]Traza 4");
-	    ImageIO.write(scaledBI, "JPG", new File(fileOutput));
+	    File outputFile = new File(fileOutput);
+	    System.err.println("[ThumbManager - generateThumb]outputFile.exists() antes: " + outputFile.exists());
+	    if (outputFile.exists()) {
+	    	System.err.println("[ThumbManager - generateThumb]outputFile.canWrite(): " + outputFile.canWrite());
+	    	outputFile.delete();
+	    }
+	    System.err.println("[ThumbManager - generateThumb]outputFile.exists() despues: " + outputFile.exists());
+	    ImageIO.write(scaledBI, "JPG", outputFile);
 	    System.err.println("[ThumbManager - generateThumb]End");
 	}
 }
